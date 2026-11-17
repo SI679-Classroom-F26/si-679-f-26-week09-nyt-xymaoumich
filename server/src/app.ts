@@ -1,3 +1,4 @@
+import path from 'node:path';
 import express from 'express';
 import cors from 'cors';
 import { productsRouter } from './routes/products-router.js';
@@ -11,10 +12,15 @@ const app = express();
 
 app.use(cors({ origin: getClientOrigin() }));
 app.use(express.json());
+app.get('/health', (_req, res) => {
+  res.json({ ok: true });
+});
 app.use('/products', productsRouter);
 app.use('/auth', authRouter);
 app.use('/users', usersRouter);
 app.use('/orders', ordersRouter);
+const clientDist = path.join(import.meta.dirname, '..', '..', 'client', 'dist');
+app.use(express.static(clientDist));
 app.use(errorHandler);
 
 export { app };
